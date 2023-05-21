@@ -1,0 +1,43 @@
+NAME
+       xicon - extract icons from running X windows
+
+SYNOPSIS
+       xicon [-h] [-v] [-x] [-o output] [-d dimension] window_id
+
+DESCRIPTION
+       xicon  is a simple utility for extracting icons from running X windows based
+       on the _NET_WM_ICON window property.
+
+OPTIONS
+       -h help
+              print xicon's help menu and exit
+
+       -v version
+              print xicon's version and exit
+
+       -x hex
+              parse as a hex-value instead of base-10
+
+       -o output
+              output icon data to output (default /dev/stdout)
+
+       -d dimension
+              maximum icon dimension to query from the X window
+
+EXAMPLES
+       The following examples demonstrate some common usages of xicon
+
+   Output the icon path of the currently focused X window
+        xdotool getwindowfocus | xicon
+
+   Continuously watch and output the icon of the currently focused X window
+        xtitle -s -f "%u\n" | while read -r id; do xicon $id; done
+
+AUTHOR
+       Samuel Kunst <samuel at kunst.me>
+
+LICENSE
+       xicon is released under the terms of the GPLv3 license
+
+SEE ALSO
+       xtitle xdotool(1)
