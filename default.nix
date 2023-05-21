@@ -2,8 +2,7 @@
   stdenv,
   libX11,
   libXft,
-  SDL_image,
-  SDL,
+  libpng,
   pkg-config,
 }:
 stdenv.mkDerivation {
@@ -19,7 +18,6 @@ stdenv.mkDerivation {
   buildInputs = [
     libX11
     libXft
-    SDL_image
-    SDL
+    libpng
   ];
 }
