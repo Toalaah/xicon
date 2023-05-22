@@ -40,15 +40,13 @@ die(const char *msg, ...) {
 }
 
 void
-save_png(const char *filename, unsigned int width, unsigned long height,
-         unsigned long *raw_data) {
+save_png(const char *filename, unsigned int width, unsigned long height, unsigned long *raw_data) {
   FILE *fp = fopen(filename, "wb");
   if (!fp) {
     die("error opening file %s for writing", filename);
   }
 
-  png_structp png =
-      png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   if (!png) {
     fclose(fp);
     die("error creating PNG write structure");
@@ -68,8 +66,7 @@ save_png(const char *filename, unsigned int width, unsigned long height,
   }
 
   png_init_io(png, fp);
-  png_set_IHDR(png, info, width, width, 8, PNG_COLOR_TYPE_RGBA,
-               PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
+  png_set_IHDR(png, info, width, width, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
                PNG_FILTER_TYPE_DEFAULT);
   png_write_info(png, info);
 
@@ -97,17 +94,15 @@ save_png(const char *filename, unsigned int width, unsigned long height,
 
 void
 usage(void) {
-  // clang-format off
   const char *usage =
-      XICON_PROGRAM_NAME " [[-h|-v|-x|-o output|-d dimension]...] window_id\n"
+      XICON_PROGRAM_NAME " [-h] [-v] [-x] [-o output] [-d dimension] window_id\n"
                          "    -h             print this help and exit\n"
                          "    -v             print version and exit\n"
-                         "    -x             parse the window id is as a hex value (default false)\n"
+                         "    -x             parse the window id as a hex value (default false)\n"
                          "    -o output      override the output path. This implies a forced re-query\n"
                          "                   of the window's icon data.\n"
                          "    -d dimension   maximum icon dimension to query. If this value is too\n"
                          "                   small, image data may not be parsed corectly (default 128)\n";
-  // clang-format on
   printf("%s", usage);
 }
 
@@ -130,7 +125,7 @@ parse_opts(int argc, char *argv[], struct xicon_opts *opts) {
       opts->flag_hex = 1;
     } else if (strcmp(argv[i], "-o") == 0) {
       if (i + 1 >= argc)
-        die("missing out path");
+        die("missing output path parameter");
       i++;
       opts->out_path = argv[i];
     } else if (strcmp(argv[i], "-d") == 0) {
@@ -139,9 +134,7 @@ parse_opts(int argc, char *argv[], struct xicon_opts *opts) {
       i++;
       int tmp = atoi(argv[i]);
       if (!tmp) {
-        fprintf(stderr,
-                "could not parse dimension '%s', using default instead\n",
-                argv[i]);
+        fprintf(stderr, "could not parse dimension '%s', using default instead\n", argv[i]);
       } else {
         opts->dimension = tmp;
       }
@@ -202,8 +195,7 @@ main(int argc, char *argv[]) {
 
   // if output path not forcibly specified, construct path from the window id.
   // This enables caching of previously queried window properties.
-  if(!opts->out_path) {
-
+  if (!opts->out_path) {
   }
   char *template = "/tmp/xicon/";
   char *dir_name = mkdtemp(template);
@@ -214,10 +206,8 @@ main(int argc, char *argv[]) {
   Atom cardinal = XInternAtom(display, "CARDINAL", False);
   atom = XInternAtom(display, "_NET_WM_ICON", False);
 
-  if (XGetWindowProperty(display, window, atom, 0,
-                         (opts->dimension * opts->dimension) + 8, False,
-                         cardinal, &actual_type, &actual_format, &num_items,
-                         &bytes_after, &prop_data) != Success) {
+  if (XGetWindowProperty(display, window, atom, 0, (opts->dimension * opts->dimension) + 8, False, cardinal,
+                         &actual_type, &actual_format, &num_items, &bytes_after, &prop_data) != Success) {
     die("could not retrieve window property for window '%ld'", window);
     return EXIT_FAILURE;
   }
