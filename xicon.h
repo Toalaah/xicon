@@ -37,8 +37,7 @@ struct xicon_opts {
 
 void parse_opts(int argc, char **argv, struct xicon_opts *opts);
 void die(const char *msg, ...);
-void save_png(const char *filename, unsigned int width, unsigned long height,
-              unsigned long *raw_data);
+void save_png(const char *filename, unsigned int width, unsigned long height, unsigned long *raw_data);
 void usage(void);
 
 #endif // XICON_H

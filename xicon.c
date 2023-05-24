@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#define _POSIX_C_SOURCE 200809L
 
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -99,8 +100,7 @@ usage(void) {
                          "    -h             print this help and exit\n"
                          "    -v             print version and exit\n"
                          "    -x             parse the window id as a hex value (default false)\n"
-                         "    -o output      override the output path. This implies a forced re-query\n"
-                         "                   of the window's icon data.\n"
+                         "    -o output      override the output path (default /dev/stdout)\n"
                          "    -d dimension   maximum icon dimension to query. If this value is too\n"
                          "                   small, image data may not be parsed corectly (default 128)\n";
   printf("%s", usage);
@@ -110,7 +110,7 @@ void
 parse_opts(int argc, char *argv[], struct xicon_opts *opts) {
   // default values
   opts->dimension = 128;
-  opts->out_path = NULL;
+  opts->out_path = "/dev/stdout";
   opts->win_id = NULL;
 
   for (int i = 1; i < argc; i++) {
@@ -159,11 +159,6 @@ main(int argc, char *argv[]) {
   unsigned char *prop_data = NULL;
   struct xicon_opts *opts = malloc(sizeof(struct xicon_opts));
 
-  if (argc < 2) {
-    usage();
-    return EXIT_FAILURE;
-  }
-
   parse_opts(argc, argv, opts);
 
   if (opts->flag_help) {
@@ -182,25 +177,28 @@ main(int argc, char *argv[]) {
     die("cannot open display");
   }
 
-  // TODO: read from stdin / wait for input
+  // read input from stdin if not passed as a direct arg
   if (!opts->win_id) {
-    usage();
-    return EXIT_FAILURE;
+    FILE *fp;
+    size_t len = 0;
+    ssize_t read;
+    fp = fopen("/dev/stdin", "r");
+    if (fp == NULL) {
+      die("could not open file pointer to /dev/stdin");
+    }
+    if ((read = getline(&(opts->win_id), &len, fp)) == -1) {
+      die("failed to read from stdin");
+    }
+    // strip trailig newline
+    size_t last_idx = strlen(opts->win_id) - 1;
+    if (opts->win_id[last_idx] == '\n') {
+      opts->win_id[last_idx] = '\0';
+    }
   }
 
   window = strtol(opts->win_id, NULL, (opts->flag_hex ? 16 : 10));
   if (!window) {
     die("cannot parse window id '%s'", opts->win_id);
-  }
-
-  // if output path not forcibly specified, construct path from the window id.
-  // This enables caching of previously queried window properties.
-  if (!opts->out_path) {
-  }
-  char *template = "/tmp/xicon/";
-  char *dir_name = mkdtemp(template);
-  if (!dir_name) {
-    die("failed to create tmpdir");
   }
 
   Atom cardinal = XInternAtom(display, "CARDINAL", False);
