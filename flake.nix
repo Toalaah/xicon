@@ -30,7 +30,6 @@
             clang-tools # lsp-tooling
 
             xorg.libX11
-            xorg.libXft
             libpng
             pkg-config
           ];

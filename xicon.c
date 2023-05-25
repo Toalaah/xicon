@@ -189,7 +189,7 @@ main(int argc, char *argv[]) {
     if ((read = getline(&(opts->win_id), &len, fp)) == -1) {
       die("failed to read from stdin");
     }
-    // strip trailig newline
+    // strip trailing newline
     size_t last_idx = strlen(opts->win_id) - 1;
     if (opts->win_id[last_idx] == '\n') {
       opts->win_id[last_idx] = '\0';

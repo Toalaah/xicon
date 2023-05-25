@@ -1,7 +1,6 @@
 {
   stdenv,
   libX11,
-  libXft,
   libpng,
   pkg-config,
 }:
@@ -17,7 +16,6 @@ stdenv.mkDerivation {
 
   buildInputs = [
     libX11
-    libXft
     libpng
   ];
 }

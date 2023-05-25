@@ -37,14 +37,14 @@ all: $(OUT)
 $(OBJ): Makefile
 
 install:
-	mkdir -p $(DESTDIR)$(BINPREFIX)
-	cp -p $(OUT) $(DESTDIR)$(BINPREFIX)
-	mkdir -p $(DESTDIR)$(MANPREFIX)
-	sed "s/VERSION/$(VERSION)/g" < $(OUT).1 | gzip > $(DESTDIR)$(MANPREFIX)/$(OUT).1.gz
+	mkdir -p $(BINPREFIX)
+	cp -p $(OUT) $(BINPREFIX)
+	mkdir -p $(MANPREFIX)
+	sed "s/VERSION/$(VERSION)/g" < $(OUT).1 | gzip > $(MANPREFIX)/$(OUT).1.gz
 
 uninstall:
-	rm -f $(DESTDIR)$(BINPREFIX)/$(OUT)
-	rm -f $(DESTDIR)$(MANPREFIX)/$(OUT).1
+	rm -f $(BINPREFIX)/$(OUT)
+	rm -f $(MANPREFIX)/$(OUT).1
 
 clean:
 	rm -rf $(OUT) $(OBJ)
