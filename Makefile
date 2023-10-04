@@ -49,4 +49,4 @@ uninstall:
 clean:
 	rm -rf $(OUT) $(OBJ)
 
-.PHONY: all install uninstal clean
+.PHONY: all install uninstall clean
