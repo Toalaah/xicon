@@ -115,14 +115,14 @@ parse_opts(int argc, char *argv[], struct xicon_opts *opts) {
 
   for (int i = 1; i < argc; i++) {
     if (strcmp(argv[i], "-h") == 0) {
-      opts->flag_help = 1;
+      set(MODE_HELP);
       // early return if help or version flag is passed
       return;
     } else if (strcmp(argv[i], "-v") == 0) {
-      opts->flag_version = 1;
+      set(MODE_VERSION);
       return;
     } else if (strcmp(argv[i], "-x") == 0) {
-      opts->flag_hex = 1;
+      set(MODE_HEX);
     } else if (strcmp(argv[i], "-o") == 0) {
       if (i + 1 >= argc)
         die("missing output path parameter");
@@ -161,12 +161,12 @@ main(int argc, char *argv[]) {
 
   parse_opts(argc, argv, opts);
 
-  if (opts->flag_help) {
+  if (is_set(MODE_HELP)) {
     usage();
     return EXIT_SUCCESS;
   }
 
-  if (opts->flag_version) {
+  if (is_set(MODE_VERSION)) {
     printf("%s\n", XICON_VERSION);
     return EXIT_SUCCESS;
   }
@@ -196,7 +196,7 @@ main(int argc, char *argv[]) {
     }
   }
 
-  window = strtol(opts->win_id, NULL, (opts->flag_hex ? 16 : 10));
+  window = strtol(opts->win_id, NULL, ((is_set(MODE_HEX)) ? 16 : 10));
   if (!window) {
     die("cannot parse window id '%s'", opts->win_id);
   }

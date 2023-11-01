@@ -28,12 +28,16 @@ struct xicon_opts {
   char *win_id;
   const char *out_path;
   int dimension;
-
-  int flag_help;
-  int flag_version;
-  int flag_hex;
-  int flag_json;
 };
+
+static unsigned char flags;
+#define MODE_HELP (1 << 0)
+#define MODE_VERSION (1 << 1)
+#define MODE_HEX (1 << 2)
+#define MODE_JSON (1 << 3)
+
+#define set(mode) flags |= mode
+#define is_set(mode) flags &mode
 
 void parse_opts(int argc, char **argv, struct xicon_opts *opts);
 void die(const char *msg, ...);
